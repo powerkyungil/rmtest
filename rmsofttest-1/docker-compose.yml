@@ -1,0 +1,26 @@
+version: "3.3"
+services:
+  
+  oracle:
+    container_name: rmtest_oracle
+    image: thebookpeople/oracle-xe-11g:latest  
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+    volumes:
+      - ./db/data:/var/lib/oraclesql:rw
+    ports:
+      - "1522:1521"
+    restart: always
+      
+  app:
+        container_name: spring-app
+        image: openjdk:11-jdk
+        ports:
+            - “8083:8083”
+        volumes:
+            - ./app:/app
+        working_dir: /app
+        command: [“./gradlew”, “bootrun”]
+        depends_on:
+            - db
+        restart: always
